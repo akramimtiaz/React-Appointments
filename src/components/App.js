@@ -10,41 +10,59 @@ class App extends Component {
 
   state = {
     appointments: [],
-    isLoading: false,
+    isLoading: null,
   }
 
-  async componentDidMount() {
+  componentDidMount() {
 
     this.setState({ isLoading: true })
 
-    try {
-
-      const response = await fetch('./data.json')
-      const data = response.json()
-      this.setState({ appointments: data, isLoading: false })
-
-    } catch (error) {
-      console.error(error)
-    }
+    fetch('./data.json')
+    .then(response => response.json())
+    .then(data => {
+      const appointmentsData = data.map((item, index) => ({...item, id: index}))
+      this.setState({ appointments:appointmentsData, isLoading: false })
+    })
+    .catch(error => console.error(error))
 
   }
 
+
+  deleteAppointment = (selectedAppointment) => {
+    this.setState(prevState => {
+      return {
+        appointments: prevState.appointments.filter(appointment => appointment.id != selectedAppointment.id)
+      }
+    })
+  }
+
   render() {
-    const { appointments } = this.state
+    const { appointments, isLoading } = this.state
     return (
-      <main className="page bg-white" id="petratings">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 bg-white">
-              <div className="container">
-                <AddAppointments />
-                <SearchAppointments />
-                <ListAppointments appointments={appointments}/>
+      <React.Fragment>
+      {
+        isLoading ? 
+        <div className="d-flex justify-content-center bg-white py-4">
+          <div className="spinner-border" style={{width: "3rem", height: "3rem"}} role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
+        :
+        <main className="page bg-white" id="petratings">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12 bg-white">
+                <div className="container">
+                  <AddAppointments />
+                  <SearchAppointments />
+                  <ListAppointments appointments={appointments} deleteAppointment={this.deleteAppointment}/>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      }
+      </React.Fragment>
     )
   }
 }
