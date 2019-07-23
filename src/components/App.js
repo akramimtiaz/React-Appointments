@@ -10,8 +10,10 @@ class App extends Component {
 
   state = {
     appointments: [],
-    isLoading: null,
     formDisplay: false,
+    orderBy: 'petName',
+    orderDir: 'asc',
+    isLoading: null,
   }
 
   componentDidMount() {
@@ -49,8 +51,29 @@ class App extends Component {
     })
   }
 
+  changeOrder = (orderBy, orderDir) => {
+    this.setState({
+      orderBy: orderBy,
+      orderDir: orderDir,
+    })
+  }
+
   render() {
-    const { appointments, isLoading, formDisplay } = this.state
+    const { appointments, isLoading, formDisplay, orderDir, orderBy } = this.state
+
+    let order
+    let filteredApts = appointments
+
+    order = orderDir === 'asc' ? 1 : -1
+
+    filteredApts.sort((a, b) => {
+      if (a[orderBy].toLowerCase() < b[orderBy].toLowerCase()){
+        return -1 * order
+      } else {
+        return order * 1
+      }
+    })
+
     return (
       <React.Fragment>
       {
@@ -67,8 +90,8 @@ class App extends Component {
               <div className="col-md-12 bg-white">
                 <div className="container">
                   <AddAppointments formDisplay={formDisplay} toggleForm={this.toggleAppointmentForm} addAppointment={this.addAppointment}/>
-                  <SearchAppointments />
-                  <ListAppointments appointments={appointments} deleteAppointment={this.deleteAppointment}/>
+                  <SearchAppointments orderBy={orderBy} orderDir={orderDir} changeOrder={this.changeOrder}/>
+                  <ListAppointments appointments={filteredApts} deleteAppointment={this.deleteAppointment}/>
                 </div>
               </div>
             </div>
