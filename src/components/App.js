@@ -11,6 +11,7 @@ class App extends Component {
   state = {
     appointments: [],
     isLoading: null,
+    formDisplay: false,
   }
 
   componentDidMount() {
@@ -31,13 +32,25 @@ class App extends Component {
   deleteAppointment = (selectedAppointment) => {
     this.setState(prevState => {
       return {
-        appointments: prevState.appointments.filter(appointment => appointment.id != selectedAppointment.id)
+        appointments: prevState.appointments.filter(appointment => appointment.id !== selectedAppointment.id)
+      }
+    })
+  }
+
+  toggleAppointmentForm = (e) => {
+    this.setState(prevState => ({ formDisplay: !prevState.formDisplay })) //invert the value, e.g. true->false | false->true
+  }
+
+  addAppointment = newAppointment => {
+    this.setState(prevState => {
+      return {
+        appointments: [...prevState.appointments, {...newAppointment, id: prevState.appointments.length }]
       }
     })
   }
 
   render() {
-    const { appointments, isLoading } = this.state
+    const { appointments, isLoading, formDisplay } = this.state
     return (
       <React.Fragment>
       {
@@ -53,7 +66,7 @@ class App extends Component {
             <div className="row">
               <div className="col-md-12 bg-white">
                 <div className="container">
-                  <AddAppointments />
+                  <AddAppointments formDisplay={formDisplay} toggleForm={this.toggleAppointmentForm} addAppointment={this.addAppointment}/>
                   <SearchAppointments />
                   <ListAppointments appointments={appointments} deleteAppointment={this.deleteAppointment}/>
                 </div>
