@@ -17,7 +17,7 @@ class ListAppointments extends Component {
         
                     <div className="pet-info media-body">
                         <div className="pet-head d-flex">
-                            <span className="pet-name">{appointment.petName}</span>
+                            <span className="pet-name" contentEditable suppressContentEditableWarning onBlur={ e => this.props.updateAppointment('petName', e.target.innerText, appointment.id)}>{appointment.petName}</span>
                             <span className="apt-date ml-auto">
                                 <Moment 
                                     date={appointment.aptDate}
@@ -29,9 +29,9 @@ class ListAppointments extends Component {
         
                         <div className="owner-name">
                             <span className="label-item">Owner:</span>
-                            <span>{appointment.ownerName}</span>
+                            <span contentEditable suppressContentEditableWarning onBlur={ e => this.props.updateAppointment('ownerName', e.target.innerText, appointment.id)}>{appointment.ownerName}</span>
                         </div>
-                        <div className="apt-notes">{appointment.aptNotes}</div>
+                        <div className="apt-notes" contentEditable suppressContentEditableWarning onBlur={ e => this.props.updateAppointment('aptNotes', e.target.innerText, appointment.id)}>{appointment.aptNotes}</div>
                     </div>
                 </div>
             )

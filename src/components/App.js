@@ -6,6 +6,8 @@ import AddAppointments from './AddAppointments'
 import SearchAppointments from './SearchAppointments'
 import ListAppointments from './ListAppointments'
 
+import { findIndex } from 'lodash'
+
 class App extends Component {
 
   state = {
@@ -61,6 +63,19 @@ class App extends Component {
 
   updateQuery = query => this.setState({query})
 
+  updateAppointment = (field, updatedValue, id) => {
+    let updatedApts = this.state.appointments
+    let aptIndex = findIndex(this.state.appointments, {
+      id: id
+    })
+    updatedApts[aptIndex][field] = updatedValue
+
+    this.setState({
+      appointments: updatedApts
+    })
+    
+  }
+
   render() {
     const { appointments, isLoading, formDisplay, orderDir, orderBy } = this.state
 
@@ -98,7 +113,7 @@ class App extends Component {
                 <div className="container">
                   <AddAppointments formDisplay={formDisplay} toggleForm={this.toggleAppointmentForm} addAppointment={this.addAppointment}/>
                   <SearchAppointments orderBy={orderBy} orderDir={orderDir} changeOrder={this.changeOrder} updateQuery={this.updateQuery}/>
-                  <ListAppointments appointments={filteredApts} deleteAppointment={this.deleteAppointment}/>
+                  <ListAppointments appointments={filteredApts} deleteAppointment={this.deleteAppointment} updateAppointment={this.updateAppointment}/>
                 </div>
               </div>
             </div>
