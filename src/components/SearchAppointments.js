@@ -6,9 +6,13 @@ class SearchAppointments extends Component {
         SearchApts: "",
     }
 
-    handleChange = e => this.setState({ [e.target.id]: e.target.value })
+    handleChange = e => {
+        this.setState({ [e.target.id]: e.target.value })
+        this.props.updateQuery(e.target.value)
+    }
 
     render() {
+        const { SearchApts } = this.state
         return (
             <div className="search-appointments row justify-content-center my-4">
             <div className="col-md-6">
@@ -18,6 +22,8 @@ class SearchAppointments extends Component {
                   type="text"
                   className="form-control"
                   aria-label="Search Appointments"
+                  value={SearchApts}
+                  onChange={this.handleChange}
                 />
                 <div className="input-group-append">
                   <button

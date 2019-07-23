@@ -13,6 +13,7 @@ class App extends Component {
     formDisplay: false,
     orderBy: 'petName',
     orderDir: 'asc',
+    query: '',
     isLoading: null,
   }
 
@@ -58,6 +59,8 @@ class App extends Component {
     })
   }
 
+  updateQuery = query => this.setState({query})
+
   render() {
     const { appointments, isLoading, formDisplay, orderDir, orderBy } = this.state
 
@@ -66,13 +69,17 @@ class App extends Component {
 
     order = orderDir === 'asc' ? 1 : -1
 
-    filteredApts.sort((a, b) => {
+    filteredApts = filteredApts.sort((a, b) => {
       if (a[orderBy].toLowerCase() < b[orderBy].toLowerCase()){
         return -1 * order
       } else {
         return order * 1
       }
-    })
+    }).filter(appointment => 
+      appointment.petName.toLowerCase().includes(this.state.query.toLowerCase()) ||
+      appointment.ownerName.toLowerCase().includes(this.state.query.toLowerCase()) ||
+      appointment.aptDate.toLowerCase().includes(this.state.query.toLowerCase())
+    )
 
     return (
       <React.Fragment>
@@ -90,7 +97,7 @@ class App extends Component {
               <div className="col-md-12 bg-white">
                 <div className="container">
                   <AddAppointments formDisplay={formDisplay} toggleForm={this.toggleAppointmentForm} addAppointment={this.addAppointment}/>
-                  <SearchAppointments orderBy={orderBy} orderDir={orderDir} changeOrder={this.changeOrder}/>
+                  <SearchAppointments orderBy={orderBy} orderDir={orderDir} changeOrder={this.changeOrder} updateQuery={this.updateQuery}/>
                   <ListAppointments appointments={filteredApts} deleteAppointment={this.deleteAppointment}/>
                 </div>
               </div>
